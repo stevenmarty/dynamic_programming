@@ -87,7 +87,7 @@ K=size(stateSpace,1);
 
 %% Set the following to true as you progress with the files
 transitionProbabilitiesImplemented = true;
-stageCostsImplemented = false;
+stageCostsImplemented = true;
 valueIterationImplemented = false; 
 policyIterationImplemented = false;
 linearProgrammingImplemented = false;

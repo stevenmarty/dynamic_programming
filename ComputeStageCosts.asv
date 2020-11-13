@@ -89,19 +89,32 @@ function G = ComputeStageCosts(stateSpace, map)
             end
     end
 
-    function cR = get_cost_of_borders(point)
-            cR = 0;
-            
-            if (point(1) == 1) || (point(1) == M)
-                cR = 0.25 * Nc;
+    function cs = get_cost_of_borders(point)
+            distances = zeros(1,length(shooters));
+            cB = 0;
+            for shooter = 1:length(shooters)
+                xP = point(1);
+                yP = point(2);
+                
+                if xP == 0 || xP == M
+                    cB = cB + (1/4) * Nc;
+                else if yP == 0 || yP == N
+                     cB = cB + (1/4) * Nc;
+                    end
+                end
+                       
             end
             
-            if ((point(2) == 1) || (point(2) == N))
-                 cR = cR + 0.25 * Nc;
-            end   
+            cs=0;
+            for distance = distances
+                if distance <= R
+                    cs = (GAMMA/distance)*Nc;    %GAMMA/(distance+1);
+                
+                else
+                    cs = 0;
+                end
             end
-            
-    
+    end
             
   function ct = get_cost_of_trees(point)
         ct = 0;
@@ -129,12 +142,17 @@ function G = ComputeStageCosts(stateSpace, map)
 
         for input = [NORTH, SOUTH, EAST, WEST, HOVER]
             new_point = new_points(input,:);
+    %       inside grid and not in tree
             if new_point(1)<=M && new_point(2)<=N && new_point(1)>0 && new_point(2)>0 && map(new_point(1),new_point(2)) ~= TREE            
                 costTree = get_cost_of_trees(new_point);
                 costShoot = get_cost_of_shooters(new_point);
-                costBorder = get_cost_of_borders(new_point);
-                G(from,input) = costBorder + costTree + costShoot + 1;
+
+                G(from,input) = costTree +  1;
+                G(from,input) = costTree +  1;
+
+
             else
+                G(from,input) = inf;
                 G(from,input) = inf;
             end
         end  
