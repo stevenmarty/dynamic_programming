@@ -119,7 +119,8 @@ if stageCostsImplemented
     % The stage cost matrix has the dimension (K x L), i.e. the entry G(i, l)
     % represents the cost if we are in state i and apply control input l.
     
-    % TODO: Question c)
+    % TODO: Question c)H=G
+    
     G = ComputeStageCosts(stateSpace, map);
 end
 
