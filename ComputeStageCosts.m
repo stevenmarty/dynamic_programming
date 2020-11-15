@@ -81,7 +81,7 @@ function G = ComputeStageCosts(stateSpace, map)
             cs=0;
             for distance = distances
                 if distance <= R
-                    cs = (GAMMA/distance)*Nc;    %GAMMA/(distance+1);
+                    cs = (GAMMA/(1+distance))*Nc;    %GAMMA/(distance+1);
                 
                 else
                     cs = 0;
@@ -93,11 +93,11 @@ function G = ComputeStageCosts(stateSpace, map)
             cR = 0;
             
             if (point(1) == 1) || (point(1) == M)
-                cR = 0.25 * Nc;
+                cR = 0.225;
             end
             
             if ((point(2) == 1) || (point(2) == N))
-                 cR = cR + 0.25 * Nc;
+                 cR = cR + 0.225;
             end   
             end
             
@@ -109,7 +109,7 @@ function G = ComputeStageCosts(stateSpace, map)
             xdiff = abs(point(1)-trees_location(singleTree,1));
             ydiff = abs(point(2)-trees_location(singleTree,2));
             if ((xdiff == 1 && ydiff == 0) || (ydiff == 1 && xdiff == 0))
-                ct = ct + 0.25 * Nc;
+                ct = ct + 0.225;
             end 
         end
   end
