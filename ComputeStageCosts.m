@@ -124,6 +124,8 @@ function G = ComputeStageCosts(stateSpace, map)
         new_point = new_points(input,:);
 %       inside grid and not in tree
         if new_point(1)<=M && new_point(2)<=N && new_point(1)>0 && new_point(2)>0 && map(new_point(1),new_point(2)) ~= TREE 
+
+            
             P_crash_stay = get_prob_of_shooters(new_point);
 
             P_crash_wind_shooter = 0;
@@ -139,7 +141,7 @@ function G = ComputeStageCosts(stateSpace, map)
             
             for index_w = 1:4
                 new_w_point = wind_new_points(index_w,:);
-                if new_w_point(1)<=M && new_w_point(2)<=N && new_w_point(1)>0 && new_w_point(2)>0
+                if new_w_point(1)<=M && new_w_point(2)<=N && new_w_point(1)>0 && new_w_point(2)>0 && map(new_w_point(1),new_w_point(2)) ~= TREE   
                     
                     P_crash_wind_shooter = P_crash_wind_shooter + get_prob_of_shooters(new_w_point);
                     P_crash_wind_tree = P_crash_wind_tree + is_Tree(new_w_point);
@@ -155,7 +157,7 @@ function G = ComputeStageCosts(stateSpace, map)
             % shooter
             crashWind = P_crash_wind_shooter + P_crash_wind_tree + nmbr_borderPoints;
             crashStay = P_crash_stay;
-             
+
             G(from, input) = (crashStay*(1-P_WIND) + (crashWind * P_WIND * 0.25))*Nc + (1 - ((crashStay*(1-P_WIND) + (crashWind * P_WIND * 0.25))));
            
 

@@ -70,24 +70,7 @@ function G = ComputeStageCosts(stateSpace, map)
     x= find(ismember(stateSpace, [coordinate(1),coordinate(2),carry],'rows'));
     end
 
-    function cs = get_cost_of_shooters(point)
-            distances = zeros(1,length(shooters));
-            for shooter = 1:length(shooters)
-                xdiff = abs(point(1)-shooters_location(shooter,1));
-                ydiff = abs(point(2)-shooters_location(shooter,2));
-                distances(shooter) = xdiff + ydiff;
-            end
-            
-            cs=0;
-            for distance = distances
-                if distance <= R
-                    cs = (GAMMA/(1+distance));    %GAMMA/(distance+1);
-                
-                else
-                    cs = 0;
-                end
-            end
-    end
+
 
     function p = get_prob_of_shooters(point)
             distances = zeros(1,length(shooters));
@@ -105,19 +88,6 @@ function G = ComputeStageCosts(stateSpace, map)
             end
     end
 
-    function cR = get_cost_of_borders(point)
-            cR = 0;
-            
-            if (point(1) == 1) || (point(1) == M)
-                cR = 0.225;
-            end
-            
-            if ((point(2) == 1) || (point(2) == N))
-                 cR = cR + 0.225;
-            end   
-            end
-            
-    
             
   function ct = is_Tree(point)
         ct = 0;
@@ -153,7 +123,9 @@ function G = ComputeStageCosts(stateSpace, map)
        for input = [NORTH, SOUTH, EAST, WEST, HOVER]
         new_point = new_points(input,:);
 %       inside grid and not in tree
-        if new_point(1)<=M && new_point(2)<=N && new_point(1)>0 && new_point(2)>0 && map(new_point(1),new_point(2)) ~= TREE 
+        if new_point(1)<=M && new_point(2)<=N && new_point(1)>0 
+
+            
             P_crash_stay = get_prob_of_shooters(new_point);
 
             P_crash_wind_shooter = 0;
@@ -166,9 +138,11 @@ function G = ComputeStageCosts(stateSpace, map)
             eastwind = [new_point(1)+1,new_point(2)];
 
             wind_new_points = [northwind;southwind;eastwind;westwind];
+            
             for index_w = 1:4
                 new_w_point = wind_new_points(index_w,:);
-                if new_w_point(1)<=M && new_w_point(2)<=N && new_w_point(1)>0 && new_w_point(2)>0
+                if new_w_point(1)<=M && new_w_point(2)<=N && new_w_point(1)>0 && new_w_point(2)>0 && map(new_w_point(1),new_w_point(2)) ~= TREE   
+                    
                     P_crash_wind_shooter = P_crash_wind_shooter + get_prob_of_shooters(new_w_point);
                     P_crash_wind_tree = P_crash_wind_tree + is_Tree(new_w_point);
                 else
@@ -178,21 +152,14 @@ function G = ComputeStageCosts(stateSpace, map)
         
         else
               G(from,input) = inf;
-              continue
+              
         end
             % shooter
+            crashWind = P_crash_wind_shooter + P_crash_wind_tree + nmbr_borderPoints;
+            crashStay = P_crash_stay;
 
-            %crash = (P_crash_stay * (1-P_WIND) + (P_crash_wind_shooter*0.25) * P_WIND);
-            %crash  = crash + (P_crash_wind_tree * P_WIND * 0.25);
-            %crash = crash + (nmbr_borderPoints * P_WIND * 0.25);
-          
-            %G(from, input) = crash*Nc + (1-crash)*1;
-            G(from,input) = (P_crash_stay * (1-P_WIND) + (P_crash_wind_shooter) * P_WIND*0.25)*Nc + (1- (P_crash_stay + P_crash_wind_shooter))*1;
-            % tree
-           %G(from,input) =  G(from,input) + (P_crash_wind_tree * P_WIND * 0.25)*Nc + (1- (P_crash_wind_tree * P_WIND * 0.25))*1;
-            % border
-            
-            %G(from,input) =  G(from,input) + (nmbr_borderPoints * P_WIND * 0.25)*Nc + (1- (nmbr_borderPoints * P_WIND * 0.25))*1;
+            G(from, input) = (crashStay*(1-P_WIND) + (crashWind * P_WIND * 0.25))*Nc + (1 - ((crashStay*(1-P_WIND) + (crashWind * P_WIND * 0.25))));
+           
 
 
        end 
