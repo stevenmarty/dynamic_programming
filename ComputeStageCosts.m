@@ -88,19 +88,6 @@ function G = ComputeStageCosts(stateSpace, map)
             end
     end
 
-            
-  function ct = is_Tree(point)
-        ct = 0;
-        for singleTree = 1:length(trees)
-            xdiff = abs(point(1)-trees_location(singleTree,1));
-            ydiff = abs(point(2)-trees_location(singleTree,2));
-            if ((xdiff == 0 && ydiff == 0))
-                ct = ct +  1;
-            else
-                ct = ct + 0;
-            end 
-        end
-  end
 % Iterate over all startingstates and compute all possible states from
 % there and their probabilities
     for from = 1:K
@@ -144,9 +131,8 @@ function G = ComputeStageCosts(stateSpace, map)
                 if new_w_point(1)<=M && new_w_point(2)<=N && new_w_point(1)>0 && new_w_point(2)>0 && map(new_w_point(1),new_w_point(2)) ~= TREE   
                     
                     P_crash_wind_shooter = P_crash_wind_shooter + get_prob_of_shooters(new_w_point);
-                    P_crash_wind_tree = P_crash_wind_tree + is_Tree(new_w_point);
                 else
-                nmbr_borderPoints = nmbr_borderPoints + 1;
+                    nmbr_borderPoints = nmbr_borderPoints + 1;
                 end
             end  
         
@@ -155,7 +141,7 @@ function G = ComputeStageCosts(stateSpace, map)
               continue
         end
             % shooter
-            crashWind = P_crash_wind_shooter + P_crash_wind_tree + nmbr_borderPoints;
+            crashWind = P_crash_wind_shooter + nmbr_borderPoints;
             crashStay = P_crash_stay;
 
             G(from, input) = (crashStay*(1-P_WIND) + (crashWind * P_WIND * 0.25))*Nc + (1 - ((crashStay*(1-P_WIND) + (crashWind * P_WIND * 0.25))));
