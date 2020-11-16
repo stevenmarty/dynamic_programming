@@ -35,6 +35,21 @@ global K HOVER
 global TERMINAL_STATE_INDEX
 % IMPORTANT: You can use the global variable TERMINAL_STATE_INDEX computed
 % in the ComputeTerminalStateIndex.m file (see main.m)
+J_opt = zeros(K,1);
+J_new = zeros(K,1);
+u_opt_ind = zeros(K,1);
+u_opt_ind(TERMINAL_STATE_INDEX)=HOVER;
+finished = false;
 
+while ~finished    
+    for i=1:K  
+        if i ~= TERMINAL_STATE_INDEX
+            [J_new(i),u_opt_ind(i)] = min( G(i,:) + J_opt'*squeeze(P(i,:,:)) );
+        end
+        
+        finished = max(abs(J_new-J_opt))<1e-5;
+        J_opt = J_new;
+    end; 
 
+end;
 end
