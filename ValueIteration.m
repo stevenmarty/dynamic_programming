@@ -46,10 +46,10 @@ while ~finished
         if i ~= TERMINAL_STATE_INDEX
             [J_new(i),u_opt_ind(i)] = min( G(i,:) + J_opt'*squeeze(P(i,:,:)) );
         end
-        
-        finished = max(abs(J_new-J_opt))<1e-5;
-        J_opt = J_new;
     end; 
+%     TODO: should be normalize like in EX 2?
+    finished = max(abs(J_new-J_opt))<1e-5;
+    J_opt = J_new;
 
 end;
 end
