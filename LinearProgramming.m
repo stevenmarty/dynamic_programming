@@ -36,7 +36,37 @@ global K HOVER
 global TERMINAL_STATE_INDEX
 % IMPORTANT: You can use the global variable TERMINAL_STATE_INDEX computed
 % in the ComputeTerminalStateIndex.m file (see main.m)
+J_opt = ones(K,1);
+u_opt_ind = ones(K,1);
 
+f = -ones(K-1,1);
+
+b=G;
+b(TERMINAL_STATE_INDEX,:)   = []; 
+b = reshape(b,[(K-1)*5,1]);
+infinite_stage_cost = b==inf;
+b(infinite_stage_cost)=[];
+
+P_new=P;
+P_new(TERMINAL_STATE_INDEX,:,:)=[];
+P_new = [P_new(:,:,1);P_new(:,:,2);P_new(:,:,3);P_new(:,:,4);P_new(:,:,5)];
+
+I= eye(K);
+I(TERMINAL_STATE_INDEX,:)=[];
+I_new = [I(:,:);I(:,:);I(:,:);I(:,:);I(:,:)];
+
+A = I_new-P_new;
+A(infinite_stage_cost,:)=[];
+A(:,TERMINAL_STATE_INDEX)=[];
+
+J_opt([1:TERMINAL_STATE_INDEX-1,TERMINAL_STATE_INDEX+1:K]) = linprog(f,A,b);
+
+for i=1:K
+    temp=(G(i,:)+J_opt'*squeeze(P(i,:,:)))';
+    x=find(temp==min(temp))
+    u_opt_ind(i)=x(1);
+    
+    
 
 end
 
