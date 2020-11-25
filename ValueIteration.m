@@ -48,6 +48,7 @@ while ~finished
         end
     end; 
 %     TODO: should be normalize like in EX 2?
+%     TODO: Inf * 0?
     finished = max(abs(J_new-J_opt))<1e-5;
     J_opt = J_new;
 
