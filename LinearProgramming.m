@@ -64,7 +64,12 @@ J_opt([1:TERMINAL_STATE_INDEX-1,TERMINAL_STATE_INDEX+1:K]) = linprog(f,A,b);
 for i=1:K
     temp=(G(i,:)+J_opt'*squeeze(P(i,:,:)))';
     x=find(temp==min(temp))
+    if size(x) > 1
+        xsize = size(x)
+        u_opt_ind(i) = x(xsize(1));
+    else
     u_opt_ind(i)=x(1);
+    end
 end
     
 

@@ -59,6 +59,9 @@ while ~finished
 
     for h=1:K  
         if h ~= TERMINAL_STATE_INDEX
+            if h == 473
+                G(h,:) + J_opt'*squeeze(P(h,:,:))
+            end
             [A, u_opt_ind(h)] = min( G(h,:) + J_opt'*squeeze(P(h,:,:)) );
         end
     end
